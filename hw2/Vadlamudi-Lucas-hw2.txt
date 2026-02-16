@@ -104,7 +104,7 @@ isSubset a b = subset (makeSet a) (makeSet b) -- turns both lists into sets firs
 -- Problem 5 (10 points)
 -- Using subset (from Problem 4) in the definition is required
 setEqual :: Eq a => Set a -> Set a -> Bool
-setEqual as bs = subset as bs && subset bs as -- checks if two sets contain the same elements by testing both subset possibilites using helper functions
+setEqual as bs = subset as bs && subset bs as -- checks equality by verifying both subset directions
 -- checks if the first set is a subset of the second
 -- then checks if the second set is also a subset of the first
 -- if both conditions are true, the sets are equal via rule of subsets
@@ -117,7 +117,7 @@ setEqual as bs = subset as bs && subset bs as -- checks if two sets contain the 
 
 powerset :: Set a -> Set (Set a)
 powerset [] = [[]] --base case
-powerset (a:as) = powerset as ++ [a:x | x <- powerset as] -- generates all possible subsets by recursively choosing each following element
+powerset (a:as) = powerset as ++ [a:x | x <- powerset as] -- take subsets without a, then add a to each of them
 ---- Question 6.2 (15 points)
 {- Write your answer for Question 6.2 within this block comment.
 
