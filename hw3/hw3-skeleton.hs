@@ -37,32 +37,104 @@ merge (x:xs) (a:as) -- split both lists into head and tail
 -- Problem 3 (Chapter 6, Exercise 8) (5+10=15 points)
 ---- Question 3.1 (5 points)
 halve :: [a] -> ([a], [a])
-halve = undefined
+halve xs = splitAt (length xs `div` 2) xs -- find middle index using length div 2, split list at that index into two parts, splitAt returns a tuple where first value has first half of elements and second value has remaining elements starting at that midpoint
 
 
 
 ---- Question 3.2 (10 points)
 msort :: Ord a => [a] -> [a]
-msort = undefined
+msort [] = [] -- base case, empty list has no elements so already sorted, nothing to split or merge
+msort [x] = [x] -- base case, list with one element is already sorted, no need to split further
 
+msort xs = 
+  let (left, right) = halve xs -- use halve to split list into two smaller lists, left is first half, right is second half
+  in merge (msort left) (msort right) -- recursively sort left half and right half, then merge the two sorted halves into one sorted list
 
 
 -- Problem 4 (10+10+10=30 points)
 ---- Question 4.1 (10 points) 
 mergeBy :: (a -> a -> Bool) -> [a] -> [a] -> [a]
-mergeBy = undefined
+mergeBy trend xs [] = xs -- base case, second list empty, return remaining first list
+mergeBy trend [] as = as -- base case, first list empty, return remaining second list
+
+mergeBy trend (x:xs) (a:as) -- split both lists into head and tail so we can compare first elements of each sorted list
+  | trend x a = x : mergeBy trend xs (a:as) -- apply predicate to x and a, if predicate returns true then x should come before a in sorted order, place x in front and recursively merge rest of first list with full second list
+  | otherwise = a : mergeBy trend (x:xs) as -- if predicate returns false then a should come before x, place a in front and recursively merge full first list with rest of second list
+
 
 
 ---- Question 4.2 (10 points) 
 msortBy :: (a -> a -> Bool) -> [a] -> [a]
-msortBy = undefined
+msortBy _ [] = [] -- base case, empty list already sorted, predicate not needed
+msortBy _ [x] = [x] -- base case, single element already sorted, predicate not needed
 
+msortBy trend xs =
+  let (left, right) = halve xs -- split list into two smaller lists, left is first half, right is second half
+  in mergeBy trend (msortBy trend left) (msortBy trend right) -- call msortBy on both halves to sort them using same predicate, then merge the two sorted halves using mergeBy so final list follows the predicate order
 
 ---- Question 4.3 (10 points)
-{- Write your answer for Question 4.3 within this block comment.
--- Must be detailed step-by-step.
+{-
 
+
+we start with splitting (>) [8,5,4,9,3] using halve
+the length is 5 and 5 div 2 is 2. splitAt 2 gives ([8,5] , [4,9,3]). the first list only has 2 elements because the take function only takes the first 2 elements, the remaining are dropped into the 2nd list
+
+so
+msortBy (>) [8,5,4,9,3]
+= mergeBy (>) (msortBy (>) [8,5]) (msortBy (>) [4,9,3])
+
+now sort left side [8,5].
+
+halve [8,5]. length 2. 2 div 2 is 1.
+splitAt 1 gives ([8] , [5]).
+
+so
+msortBy (>) [8,5]
+= mergeBy (>) [8] [5]
+because single element lists are base case.
+
+mergeBy (>) [8] [5].
+compare 8 and 5. 8 > 5 is true so take 8.
+then mergeBy (>) [] [5] returns [5].
+so result is [8,5].
+
+now sort right side [4,9,3].
+
+halve [4,9,3]. length 3. 3 div 2 is 1.
+splitAt 1 gives ([4] , [9,3]).
+
+so
+msortBy (>) [4,9,3]
+= mergeBy (>) [4] (msortBy (>) [9,3]).
+
+now sort [9,3].
+halve [9,3]. length 2. 2 div 2 is 1.
+splitAt 1 gives ([9] , [3]).
+
+mergeBy (>) [9] [3].
+compare 9 and 3. 9 > 3 is true so take 9.
+then return [3].
+so [9,3].
+
+now merge [4] and [9,3].
+
+mergeBy (>) [4] [9,3].
+compare 4 and 9. 4 > 9 is false so take 9.
+compare 4 and 3. 4 > 3 is true so take 4.
+then return [3].
+so result is [9,4,3].
+
+now final merge.
+
+mergeBy (>) [8,5] [9,4,3].
+compare 8 and 9. 8 > 9 is false so take 9.
+compare 8 and 4. 8 > 4 is true so take 8.
+compare 5 and 4. 5 > 4 is true so take 5.
+then remaining is [4,3].
+
+final result is [9,8,5,4,3].
 -}
+
 
 
 -- Problem 5 (10+5+10=25 points)
