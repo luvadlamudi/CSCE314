@@ -140,30 +140,165 @@ final result is [9,8,5,4,3].
 -- Problem 5 (10+5+10=25 points)
 ---- Question 5.1 (10 points)
 myInsert :: Ord a => a -> [a] -> [a]
-myInsert = undefined
+
+myInsert num [] = [num] -- base case, empty list so just return list with the element
+
+myInsert num (x:xs) -- compare num with first element of list
+  | num <= x = num : x : xs -- if num is less than or equal to x, insert num before x
+  | otherwise = x : myInsert num xs -- otherwise keep x and recursively try to insert into rest of list
+
 
 ---- Question 5.2 (5 points)
 mySort :: Ord a => [a] -> [a]
-mySort = undefined
+mySort = foldr myInsert [] -- foldr starts with empty list as base case, then inserts each element into that accumulator using myInsert, building a sorted list as recursion unwinds
 
 ---- Question 5.3 (10 points)
-{- Write your answer for Question 5.3 within this block comment.
--- Must be detailed step-by-step.
+{- 
+mySort is defined as mySort = foldr myInsert []
+
+so when we run mySort [9,5,7,8,3]
+we are applying foldr to the list with:
+    f = myInsert
+    base accumulator = []
+    input list = [9,5,7,8,3]
+ 
+foldr is right associative given by the Textbook:
+    foldr f z [x1,x2,...,xn] = f x1 (f x2 (... (f xn z)...))
+so foldr builds a nested expression first, then evaluation happens from the inside out.
+that means the accumulator starts as z, and then each element is inserted into that accumulator
+as the recursive calls return.
+
+so the structure for this input becomes:
+    foldr myInsert [] [9,5,7,8,3]
+=   myInsert 9 (myInsert 5 (myInsert 7 (myInsert 8 (myInsert 3 []))))
+
+now what myInsert guarantees.
+    myInsert takes a value and an already ascending sorted list,
+    and returns a new ascending sorted list by placing the value at the first position
+    where it is <= the next element, otherwise it keeps scanning forward.
+so myInsert preserves the sorted invariant of the accumulator.
+
+now evaluate from the innermost call, because foldr created the nest that way.
+
+    myInsert 3 []       = [3]   the base accumulator becomes sorted list of one element
+    myInsert 8 [3]      = [3,8]   it inserts 8 into sorted accumulator
+    myInsert 7 [3,8]    = [3,7,8]  then inserts 7 in correct position, accumulator stays sorted
+    myInsert 5 [3,7,8]  = [3,5,7,8]   then insert 5 in correct position, accumulator stays sorted
+    myInsert 9 [3,5,7,8]= [3,5,7,8,9]     then insert 9 at end, accumulator stays sorted
+
+    foldr supplies each element to myInsert, with the second argument always being the result
+    of inserting the elements to its right into the base [].
+    since myInsert maintains sorted order, the accumulator is always sorted at every step,
+    and the final accumulator is the fully sorted list.
+
+    which leaves us with: mySort [9,5,7,8,3] = [3,5,7,8,9]
 
 -}
-
-
 
 -- Problem 6 (Chapter 7, Exercise 9) (10+5=15 points)
 ---- Question 6.1 (10 points)
 altMap :: (a -> b) -> (a -> b) -> [a] -> [b]
-altMap = undefined
+altMap _ _ [] = [] -- base case, empty list returns empty list
+altMap func1 _ [x] = [func1 x] -- single element, apply first function only
+
+altMap func1 func2 (x1:x2:xs) = func1 x1 : func2 x2 : altMap func1 func2 xs -- split list into first element, second element, and remaining elements, apply func1 to first and func2 to second, then recursively process remaining list so functions alternate consistently through entire list
 
 ---- Question 6.2 (5 points)
-{- Write your answer for Question 6.2 within this block comment.
--- Must be detailed step-by-step.
+{- 
+ghci> altMap (\x->x-3) (`div` 2) [3..9]
 
+first [3..9] expands to [3,4,5,6,7,8,9] due to list range enumeration
+
+our provided functions are
+func1 = (\x->x-3)
+func2 = (`div` 2)
+
+altMap has these base cases
+altMap _ _ [] = [] where an empty list is provided
+altMap func1 _ [x] = [func1 x] where we are left with a singleton
+altMap func1 func2 (x1:x2:xs) = func1 x1 : func2 x2 : altMap func1 func2 xs
+
+
+
+starting with altMap func1 func2 [3,4,5,6,7,8,9]
+this matches (x1:x2:xs) because list has at least 2 elements.
+so x1 = 3, x2 = 4, xs = [5,6,7,8,9]
+
+altMap func1 func2 (x1:x2:xs)
+= func1 x1 : func2 x2 : altMap func1 func2 xs
+
+so
+= func1 3 : func2 4 : altMap func1 func2 [5,6,7,8,9]
+
+now compute those 2 values.
+func1 3 = 3 - 3 = 0
+func2 4 = 4 `div` 2 = 2
+
+so now we have.
+= 0 : 2 : altMap func1 func2 [5,6,7,8,9]
+
+next recursive call.
+
+altMap func1 func2 [5,6,7,8,9]
+again matches (x1:x2:xs).
+x1 = 5, x2 = 6, xs = [7,8,9]
+
+= func1 5 : func2 6 : altMap func1 func2 [7,8,9]
+
+func1 5 = 5 - 3 = 2
+func2 6 = 6 `div` 2 = 3
+
+so this call becomes.
+= 2 : 3 : altMap func1 func2 [7,8,9]
+
+plug that into the previous line.
+we had 0 : 2 : altMap func1 func2 [5,6,7,8,9]
+so now.
+= 0 : 2 : (2 : 3 : altMap func1 func2 [7,8,9])
+which is same as.
+= 0 : 2 : 2 : 3 : altMap func1 func2 [7,8,9]
+
+next recursive call.
+
+altMap func1 func2 [7,8,9]
+matches (x1:x2:xs) still.
+x1 = 7, x2 = 8, xs = [9]
+
+= func1 7 : func2 8 : altMap func1 func2 [9]
+
+func1 7 = 7 - 3 = 4
+func2 8 = 8 `div` 2 = 4
+
+so.
+= 4 : 4 : altMap func1 func2 [9]
+
+plug back in again.
+= 0 : 2 : 2 : 3 : (4 : 4 : altMap func1 func2 [9])
+= 0 : 2 : 2 : 3 : 4 : 4 : altMap func1 func2 [9]
+
+now the last call.
+
+altMap func1 func2 [9]
+this does not match (x1:x2:xs) because only 1 element.
+so it matches the single element case.
+altMap func1 _ [x] = [func1 x]
+
+here x = 9.
+so.
+altMap func1 func2 [9] = [func1 9]
+
+func1 9 = 9 - 3 = 6
+
+so last call gives [6].
+
+plug it in.
+= 0 : 2 : 2 : 3 : 4 : 4 : [6]
+= [0,2,2,3,4,4,6]
+
+final.
+altMap (\x->x-3) (`div` 2) [3..9] = [0,2,2,3,4,4,6]
 -}
+
 
 
 
