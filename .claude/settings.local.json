@@ -10,7 +10,8 @@
       "Bash(cd \"C:/Users/lucas/OneDrive/Desktop/314/quiz3\" && npm run build 2>&1)",
       "Bash(npm install:*)",
       "Bash(cp:*)",
-      "WebSearch"
+      "WebSearch",
+      "Bash(done)"
     ]
   }
 }

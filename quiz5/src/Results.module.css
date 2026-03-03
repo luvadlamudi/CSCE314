@@ -1,0 +1,229 @@
+.wrap {
+  width: 100%;
+  max-width: 680px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  animation: fadeUp 0.4s ease;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.header { text-align: center; }
+
+.courseTag {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--muted);
+  letter-spacing: 0.04em;
+  margin-bottom: 0.3rem;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #f8fafc;
+}
+
+/* Score card */
+.scoreCard {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 2.5rem 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.circle {
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  border: 5px solid var(--ring-color, var(--accent));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 30px color-mix(in srgb, var(--ring-color, var(--accent)) 30%, transparent);
+  margin-bottom: 0.5rem;
+}
+
+.scoreBig {
+  font-size: 2.8rem;
+  font-weight: 900;
+  color: #f8fafc;
+  line-height: 1;
+}
+
+.scoreOf {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.gradeLabel {
+  font-size: 2rem;
+  font-weight: 800;
+}
+
+.pct {
+  font-size: 1rem;
+  color: var(--muted);
+  margin-top: -6px;
+}
+
+.msg {
+  color: #94a3b8;
+  font-size: 0.95rem;
+  text-align: center;
+  max-width: 380px;
+  line-height: 1.5;
+}
+
+.breakdown {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-top: 0.8rem;
+  background: #0f1117;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1rem 2rem;
+}
+
+.bItem { text-align: center; }
+
+.bNum {
+  display: block;
+  font-size: 1.7rem;
+  font-weight: 800;
+}
+
+.bLabel {
+  font-size: 0.72rem;
+  color: var(--muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.bDivider {
+  width: 1px;
+  height: 40px;
+  background: var(--border);
+}
+
+/* Review */
+.reviewSection { display: flex; flex-direction: column; gap: 0.8rem; }
+
+.reviewTitle {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #f1f5f9;
+  margin-bottom: 0.2rem;
+}
+
+.reviewCard {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 1.2rem 1.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.rcCorrect { border-left: 3px solid #22c55e; }
+.rcWrong   { border-left: 3px solid #ef4444; }
+
+.rcHeader {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+}
+
+.rcNum {
+  background: var(--accent);
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 800;
+  padding: 0.15rem 0.5rem;
+  border-radius: 6px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.rcQ {
+  font-size: 0.92rem;
+  font-weight: 500;
+  color: #e2e8f0;
+  line-height: 1.45;
+  flex: 1;
+}
+
+.rcIcon {
+  font-weight: 800;
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+.iconGreen { color: #4ade80; }
+.iconRed   { color: #f87171; }
+
+.rcAnswers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.8rem;
+  align-items: baseline;
+}
+
+.rcLabel {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.rcAnswer {
+  font-size: 0.88rem;
+  font-weight: 500;
+  padding: 0.15rem 0.55rem;
+  border-radius: 6px;
+}
+
+.ansGreen { background: #052e16; color: #86efac; }
+.ansRed   { background: #2d0707; color: #fca5a5; }
+
+.rcExplain {
+  font-size: 0.82rem;
+  color: #64748b;
+  line-height: 1.5;
+  padding-top: 0.2rem;
+  border-top: 1px solid var(--border);
+}
+
+/* Retry */
+.retryBtn {
+  background: transparent;
+  border: 1.5px solid var(--accent);
+  color: var(--accent2);
+  border-radius: 11px;
+  padding: 0.8rem 2.5rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  align-self: center;
+  transition: background 0.15s, transform 0.1s;
+}
+
+.retryBtn:hover { background: #1a1b3a; transform: translateY(-1px); }
+.retryBtn:active { transform: translateY(0); }
+
+@media (max-width: 500px) {
+  .scoreCard { padding: 1.8rem 1.2rem; }
+  .reviewCard { padding: 1rem; }
+}

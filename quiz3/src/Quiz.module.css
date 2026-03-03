@@ -1,0 +1,265 @@
+.wrap {
+  width: 100%;
+  max-width: 680px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.courseTag {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--muted);
+  letter-spacing: 0.03em;
+}
+
+.counter {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--accent2);
+  background: #1a1b2e;
+  border: 1px solid #2a2c4a;
+  padding: 0.25rem 0.7rem;
+  border-radius: 99px;
+}
+
+.progressTrack {
+  height: 5px;
+  background: var(--surface2);
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), #a78bfa);
+  border-radius: 99px;
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.cardTop {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+}
+
+.qBadge {
+  background: var(--accent);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 0.2rem 0.55rem;
+  border-radius: 7px;
+  letter-spacing: 0.04em;
+}
+
+.typeBadge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.2rem 0.6rem;
+  border-radius: 99px;
+  letter-spacing: 0.03em;
+}
+
+.mcq { background: #1a2744; color: #60a5fa; }
+.tf  { background: #132820; color: #4ade80; }
+
+.questionText {
+  font-size: 1.1rem;
+  font-weight: 500;
+  line-height: 1.6;
+  color: #f1f5f9;
+}
+
+.inlineBlock {
+  display: block;
+  background: #0d1017;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  padding: 0.6rem 0.9rem;
+  font-size: 0.85rem;
+  line-height: 1.65;
+  color: #a5f3fc;
+  margin: 0.3rem 0;
+  white-space: pre;
+}
+
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  background: #0f1117;
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  padding: 0.9rem 1.1rem;
+  text-align: left;
+  color: var(--text);
+  font-size: 0.95rem;
+  line-height: 1.45;
+  transition: border-color 0.15s, background 0.15s, transform 0.1s;
+  position: relative;
+}
+
+.option:not(:disabled):hover {
+  border-color: var(--border-hover);
+  background: var(--surface2);
+}
+
+.option:not(:disabled):active {
+  transform: scale(0.99);
+}
+
+.option.selected {
+  border-color: var(--accent);
+  background: #1a1b3a;
+}
+
+.option.correct {
+  border-color: var(--green);
+  background: var(--green-dim);
+  color: #bbf7d0;
+}
+
+.option.wrong {
+  border-color: var(--red);
+  background: var(--red-dim);
+  color: #fecaca;
+}
+
+.option.idle:disabled {
+  opacity: 0.45;
+}
+
+.letter {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 7px;
+  background: var(--surface2);
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: var(--muted);
+}
+
+.option.selected .letter { background: #2e307a; color: var(--accent2); }
+.option.correct  .letter { background: #145228; color: #86efac; }
+.option.wrong    .letter { background: #5c1010; color: #fca5a5; }
+
+.optText { flex: 1; }
+
+.icon {
+  font-size: 1.1rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.feedback {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  padding: 1rem 1.1rem;
+  border-radius: 11px;
+  font-size: 0.9rem;
+  line-height: 1.55;
+  animation: fadeIn 0.25s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.feedbackCorrect {
+  background: #071c10;
+  border: 1px solid #1a5c30;
+  color: #86efac;
+}
+
+.feedbackWrong {
+  background: #1a0808;
+  border: 1px solid #5c1818;
+  color: #fca5a5;
+}
+
+.feedbackIcon { font-size: 1.1rem; flex-shrink: 0; margin-top: 1px; }
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.btnPrimary {
+  background: linear-gradient(135deg, var(--accent), #7c3aed);
+  color: #fff;
+  border: none;
+  border-radius: 11px;
+  padding: 0.8rem 2rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  transition: opacity 0.15s, transform 0.1s;
+  box-shadow: 0 4px 18px #6366f144;
+}
+
+.btnPrimary:hover:not(:disabled) { opacity: 0.88; transform: translateY(-1px); }
+.btnPrimary:active:not(:disabled) { transform: translateY(0); }
+.btnPrimary:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none; }
+
+.dots {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  padding: 0 1rem;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--border);
+  transition: background 0.3s, transform 0.2s;
+}
+
+.dotDone { background: #4338ca; }
+
+.dotActive {
+  background: var(--accent2);
+  transform: scale(1.35);
+}
+
+@media (max-width: 500px) {
+  .card { padding: 1.4rem; }
+  .questionText { font-size: 1rem; }
+}
