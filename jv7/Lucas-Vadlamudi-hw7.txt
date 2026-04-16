@@ -1,0 +1,413 @@
+package jv7;
+
+/* Skeleton provided by Hyunyoung Lee
+   For CSCE 314 [Sections 502, 503] Spring 2026, Assignment 7
+   Due: Wednesday, 4/15/2026, 11:59 p.m.
+   Classes contained: Node, Node$NodeIterator, MyQueue
+
+   Student Name: Lucas Vadlamudi
+   UIN: 535001242
+   Acknowledgements:
+*/
+
+import java.util.Iterator;
+import java.util.Arrays;
+import java.util.NoSuchElementException;
+import static java.lang.System.out;
+
+// Total 100 points
+
+// class Node: 5 points
+// give correct class header - given
+final class Node<E> implements Iterable<E> {
+  // private fields
+  private E val;
+  private Node<E> next;
+
+  // (1 point) implement constructor
+  public Node(E val, Node<E> node) {
+    this.val = val;
+    this.next = node;
+  }
+
+  // (2 points) iterator() returns a NodeIterator object for this object
+  // pass this so the iterator starts at the current node
+  @Override
+  public NodeIterator<E> iterator() {
+    return new NodeIterator<E>(this);
+  }
+
+  // (2 points) getter and setter methods for the private fields
+  public E getVal() {
+    return val;
+  }
+
+  public void setVal(E v) {
+    val = v;
+  }
+
+  public Node<E> getNext() {
+    return next;
+  }
+
+  public void setNext(Node<E> node) {
+    next = node;
+  }
+
+  // *** NodeIterator as an inner class: 10 points
+  // Having NodeIterator as an inner class of Node makes sense
+  // correct class header as given in the problem statement
+  class NodeIterator<E> implements Iterator<E> {
+    private Node<E> p; // given
+
+    // (1 points) constructor
+    public NodeIterator(Node<E> n) {
+      p = n;
+    }
+
+    // (9 points) methods to implement the Iterator interface
+    //// (2 points) hasNext()
+    // p becomes null when we go past the last node so use that to check
+    @Override
+    public boolean hasNext() {
+      return p != null;
+    }
+
+    //// (7 points) next()
+    @Override
+    public E next() {
+      if (hasNext() == false) // if there is no next value, end
+        throw new NoSuchElementException();
+      // save the value first before moving p or else we lose it
+      E elem = p.getVal();
+      p = p.getNext();
+      return elem;
+    }
+  } // end of NodeIterator
+
+  // Total 10 points for the two methods: mysum, print
+
+  //// 7 points
+  // ? extends Number, we can pass Node<Double> or Node<Float>/ Node<Integer>
+  // without wildcard java disallows Node<Double> where Node<Number> expected
+  static double mysum(Iterable<? extends Number> n) {
+    double sum = 0.0;
+    for (Number num : n) {
+      sum += num.doubleValue();
+    }
+    return sum;
+  }
+
+  //// 3 points
+  // T can be anything, loop and print each element with a space
+  static <T> void print(Iterable<T> n) {
+    for (T elem : n) {
+      System.out.print(elem + " ");
+    }
+    System.out.println();
+  }
+
+  // Required: (20 points) Expand the main method (see the pdf for
+  // more details), but keep whatever provided as it is
+  public static void main(String args[]) {
+    Node<Double> doublelist = new Node<Double>(21.5,
+        new Node<Double>(16.74,
+            new Node<Double>(2.189,
+                new Node<Double>(7.1, null))));
+
+    System.out.println("===");
+    print(doublelist);
+    System.out.println("sum doublelist = " + mysum(doublelist));
+    System.out.println("===");
+
+    // EXPAND this main. Test every functionality including getter and
+    // setter methods. See the hw7.pdf for more details.
+
+    // float list
+    Node<Float> floatlist = new Node<Float>(3.0f,
+        new Node<Float>(6.0f,
+            new Node<Float>(9.0f, null)));
+    System.out.println("=== float list ===");
+    print(floatlist);
+    System.out.println("sum floatlist = " + mysum(floatlist));
+
+    // integer list
+    Node<Integer> intlist = new Node<Integer>(5,
+        new Node<Integer>(10,
+            new Node<Integer>(15, null)));
+    System.out.println("=== integer list ===");
+    print(intlist);
+    System.out.println("sum intlist = " + mysum(intlist));
+
+    // null double list
+    Node<Double> doublelist2 = null;
+    System.out.println("doublelist2 is null: " + (doublelist2 == null));
+
+    // getter setter test
+    System.out.println("=== getter setter ===");
+    Node<Integer> n1 = new Node<Integer>(100, null);
+    System.out.println("getVal: " + n1.getVal());
+    n1.setVal(999);
+    System.out.println("setVal to 999, getVal: " + n1.getVal());
+    Node<Integer> n2 = new Node<Integer>(200, null);
+    n1.setNext(n2);
+    System.out.println("getNext getVal: " + n1.getNext().getVal());
+
+    // for each on intlist using NodeIterator
+    System.out.println("=== for each intlist ===");
+    for (Integer i : intlist) {
+      System.out.print(i + " ");
+    }
+    System.out.println();
+
+    // for each on floatlist
+    System.out.println("=== for each floatlist ===");
+    for (Float f : floatlist) {
+      System.out.print(f + " ");
+    }
+    System.out.println();
+
+    // show mysum works on all number types because of bounded wildcard
+    System.out.println("=== bounded wildcard demo ===");
+    System.out.println("sum floatlist = " + mysum(floatlist));
+    System.out.println("sum intlist = " + mysum(intlist));
+    System.out.println("sum doublelist = " + mysum(doublelist));
+
+  } // end of main
+} // end of class Node
+
+/* class MyQueue */
+
+// Total 55 points for the MyQueue class
+
+class MyQueue<E> implements Iterable<E>, Cloneable, Comparable<MyQueue<E>> {
+  protected Node<E> head;
+  protected Node<E> tail;
+  protected int length;
+
+  @Override
+  public Iterator<E> iterator() {
+    return head.iterator();
+  }
+
+  // helper method reverse() *** to be used in clone()
+  public MyQueue<E> reverse() {
+    Node<E> l = null;
+    for (E e : head)
+      l = new Node<E>(e, l);
+    return (new MyQueue<E>(l));
+  }
+
+  // Task 1: override Object.clone() (5 points)
+  // make empty queue then add each element in order with for each
+  @Override
+  public MyQueue<E> clone() {
+    MyQueue<E> copy = new MyQueue<E>();
+    if (head == null)
+      return copy;
+    for (E e : this) {
+      copy.add(e);
+    }
+    return copy;
+  }
+
+  @Override
+  public int compareTo(MyQueue<E> list) {
+    if (this.length < list.length)
+      return -1;
+    if (this.length == list.length)
+      return 0;
+    return 1;
+  }
+
+  // Task 2: override Object.equals() (5 points)
+  @Override
+  public boolean equals(Object o) {
+    // check if its even a MyQueue first
+    if (!(o instanceof MyQueue))
+      return false;
+    MyQueue<?> other = (MyQueue<?>) o;
+    if (this.length != other.length)
+      return false;
+    if (this.length == 0)
+      return true;
+    // walk both iterators side by side and compare each pair
+    Iterator<E> it1 = this.iterator();
+    Iterator<?> it2 = other.iterator();
+    while (it1.hasNext()) {
+      E e1 = it1.next();
+      Object e2 = it2.next();
+      if (e1.equals(e2) == false)
+        return false;
+    }
+    return true;
+  }
+
+  @Override
+  public int hashCode() {
+    return length;
+  }
+
+  // two constructors (implementing the one-arg constructor 5 points)
+  // no-arg constructor given
+  public MyQueue() {
+    head = null;
+    tail = null;
+    length = 0;
+  }
+
+  // Task 3: one-arg constructor (10 points)
+  // start as empty then call add for each element to keep same order
+  public MyQueue(Iterable<E> iterable) {
+    head = null;
+    tail = null;
+    length = 0;
+    for (E e : iterable) {
+      add(e);
+    }
+  }
+
+  // Task 4: total 15 points for toString(), add() and remove()
+  // toString() (5 points)
+  @Override
+  public String toString() {
+    if (head == null)
+      return "(empty)";
+    String result = "";
+    Node<E> curr = head;
+    while (curr != null) {
+      if (curr == head && curr == tail) {
+        result = result + "(head: " + curr.getVal() + ")";
+      } else if (curr == head) {
+        result = result + "(head: " + curr.getVal() + ")";
+      } else if (curr == tail) {
+        result = result + "-> (tail: " + curr.getVal() + ")";
+      } else {
+        result = result + "-> (" + curr.getVal() + ")";
+      }
+      curr = curr.getNext();
+    }
+    return result;
+  }
+
+  // add() (5 points)
+  // if queue is empty both head and tail point to new node
+  // otherwise attach new node after tail and update tail pointer
+  public void add(E item) {
+    Node<E> newNode = new Node<E>(item, null);
+    if (head == null) {
+      head = newNode;
+      tail = newNode;
+    } else {
+      tail.setNext(newNode);
+      tail = newNode;
+    }
+    length = length + 1;
+  }
+
+  // remove() (5 points)
+  // save the head value, move head forward, if now empty set tail to null too
+  public E remove() {
+    if (head == null)
+      throw new NoSuchElementException();
+    E val = head.getVal();
+    head = head.getNext();
+    if (head == null) {
+      tail = null;
+    }
+    length = length - 1;
+    return val;
+  }
+
+  // given
+  public E peek() {
+    return head.getVal();
+  }
+
+  // given
+  public int getLength() {
+    return length;
+  }
+
+  // Required: (25 points) Expand the main method, but keep whatever
+  // provided as it is
+  public static void main(String args[]) {
+    MyQueue<Integer> empty_queue = new MyQueue<Integer>();
+    MyQueue<Integer> q = new MyQueue<Integer>(Arrays.asList(10, 2, 3, 4));
+    MyQueue<Integer> q1 = new MyQueue<Integer>(Arrays.asList(2, 4, 3, 10));
+    MyQueue<Integer> q2 = new MyQueue<Integer>(q.reverse());
+
+    out.println("sum of q = " + Node.mysum(q));
+    out.println("sum of q1 = " + Node.mysum(q1));
+    Node.print(q);
+    Node.print(q1);
+
+    out.println(q);
+    out.println("q1 = " + q1);
+    out.println("q2 = " + q2);
+    out.println("q2.compareTo(q1) = " + q2.compareTo(q1));
+    out.println("=== end of test");
+
+    // EXPAND this main. Test every functionality you implemented above.
+    // See the hw7.pdf for more details.'
+
+    // double queue
+    MyQueue<Double> doublequeue2 = new MyQueue<Double>(Arrays.asList(2.3, 22.33, 222.333));
+    out.println("doublequeue2 = " + doublequeue2);
+    out.println("sum doublequeue2 = " + Node.mysum(doublequeue2));
+    Node.print(doublequeue2);
+
+    // string queue
+    MyQueue<String> stringqueue = new MyQueue<String>(Arrays.asList("hello", "world", "java"));
+    out.println("stringqueue = " + stringqueue);
+    Node.print(stringqueue);
+
+    // integer queue
+    MyQueue<Integer> intqueue = new MyQueue<Integer>(Arrays.asList(1, 2, 3, 4, 5, 6, 8, 9));
+    out.println("intqueue = " + intqueue);
+    out.println("intqueue length = " + intqueue.getLength());
+    out.println("intqueue peek = " + intqueue.peek());
+    out.println("sum intqueue = " + Node.mysum(intqueue));
+    Node.print(intqueue);
+
+    // add test
+    intqueue.add(23);
+    out.println("after add(23): " + intqueue);
+    out.println("length after add: " + intqueue.getLength());
+
+    // remove test
+    int removed = intqueue.remove();
+    out.println("removed: " + removed);
+    out.println("intqueue after remove: " + intqueue);
+    out.println("length after remove: " + intqueue.getLength());
+
+    // clone test
+    MyQueue<Integer> intqueueCopy = intqueue.clone();
+    out.println("clone: " + intqueueCopy);
+    out.println("intqueue.equals(clone) should be true: " + intqueue.equals(intqueueCopy));
+
+    // equals test
+    MyQueue<Integer> qa = new MyQueue<Integer>(Arrays.asList(1, 2, 3));
+    MyQueue<Integer> qb = new MyQueue<Integer>(Arrays.asList(1, 2, 3));
+    MyQueue<Integer> qc = new MyQueue<Integer>(Arrays.asList(3, 2, 1));
+    out.println("qa = " + qa);
+    out.println("qb = " + qb);
+    out.println("qc = " + qc);
+    out.println("qa.equals(qb) should be true: " + qa.equals(qb));
+    out.println("qb.equals(qa) should be true: " + qb.equals(qa));
+    out.println("qa.equals(qc) should be false: " + qa.equals(qc));
+    out.println("qc.equals(qa) should be false: " + qc.equals(qa));
+
+    // compareTo test
+    out.println("intqueue.compareTo(qa) = " + intqueue.compareTo(qa));
+    out.println("qa.compareTo(qb) = " + qa.compareTo(qb));
+
+    // empty queue test
+    out.println("empty_queue = " + empty_queue);
+    out.println("empty_queue length = " + empty_queue.getLength());
+
+    // reverse test
+    out.println("qa reversed = " + qa.reverse());
+
+  } // end of main
+} // end of class MyQueue
