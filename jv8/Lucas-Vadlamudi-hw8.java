@@ -212,7 +212,5 @@ class OrderManager implements Runnable {
     System.out.println("We're sold out of ingredients OR it's 8:45 PM!\n"
         + "Restaurant 314 closing, until tomorrow... Bye!");
 
-    System.out.println("Have fun!"); // last message
-
   } // end main()
 } // end class OrderManager
